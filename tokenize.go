@@ -91,6 +91,17 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 		token = NewCharacter(r, FlagNone)
 	}
 
+	var f Flag
+	newIndex, f, err = nextFlag(newIndex, input)
+	if err == errEndOfInput {
+		// Let this err be passed in the next cycle, after the current token is consumed.
+		err = nil
+	} else if err != nil {
+		return
+	}
+
+	token.ChangeFlag(f)
+
 	return
 }
 
@@ -162,6 +173,28 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 		err = errors.Wrap(ErrInvalidInput, invalidInputMessage(newIndex, "found [ without matching ]"))
 	} else {
 		t = NewSet(runes, FlagNone)
+	}
+
+	return
+}
+
+func nextFlag(index int, input []rune) (newIndex int, f Flag, err error) {
+	var escaped, ok bool
+	var r rune
+
+	newIndex, r, escaped, err = nextRune(index, input)
+	if err != nil {
+		return
+	}
+
+	if !escaped {
+		// Revert back to index for later consumption.
+		if f, ok = flagRunes[r]; !ok {
+			newIndex = index
+		}
+	} else {
+		// Revert back to index for later consumption.
+		newIndex = index
 	}
 
 	return

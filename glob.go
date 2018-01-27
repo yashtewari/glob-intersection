@@ -26,6 +26,7 @@ const (
 type Token interface {
 	Type() TokenType
 	Flag() Flag
+	ChangeFlag(Flag)
 }
 
 type token struct {
