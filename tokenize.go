@@ -100,7 +100,7 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 		return
 	}
 
-	token.ChangeFlag(f)
+	token.SetFlag(f)
 
 	return
 }

@@ -26,7 +26,7 @@ const (
 type Token interface {
 	Type() TokenType
 	Flag() Flag
-	ChangeFlag(Flag)
+	SetFlag(Flag)
 }
 
 type token struct {
@@ -42,7 +42,7 @@ func (t token) Flag() Flag {
 	return t.flag
 }
 
-func (t token) ChangeFlag(f Flag) {
+func (t token) SetFlag(f Flag) {
 	t.flag = f
 }
 
