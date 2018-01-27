@@ -61,7 +61,7 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 		if ttype, ok := tokenTypeRunes[r]; ok {
 			switch ttype {
 			case TTDot:
-				token = NewDot(FlagNone)
+				token = NewDot()
 
 			case TTSet:
 				if r == ']' {
@@ -88,7 +88,7 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 		}
 	} else {
 		// Nothing special to do.
-		token = NewCharacter(r, FlagNone)
+		token = NewCharacter(r)
 	}
 
 	var f Flag
@@ -172,7 +172,7 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 	if !complete {
 		err = errors.Wrap(ErrInvalidInput, invalidInputMessage(newIndex, "found [ without matching ]"))
 	} else {
-		t = NewSet(runes, FlagNone)
+		t = NewSet(runes)
 	}
 
 	return

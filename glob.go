@@ -52,9 +52,9 @@ type character struct {
 	r rune
 }
 
-func NewCharacter(r rune, flag Flag) Token {
+func NewCharacter(r rune) Token {
 	return character{
-		token: token{TTCharacter, flag},
+		token: token{ttype: TTCharacter},
 		r:     r,
 	}
 }
@@ -68,9 +68,9 @@ type dot struct {
 	token
 }
 
-func NewDot(flag Flag) Token {
+func NewDot() Token {
 	return dot{
-		token: token{TTDot, flag},
+		token: token{ttype: TTDot},
 	}
 }
 
@@ -80,13 +80,13 @@ type set struct {
 	runes map[rune]bool
 }
 
-func NewSet(runes []rune, flag Flag) Token {
+func NewSet(runes []rune) Token {
 	m := map[rune]bool{}
 	for _, r := range runes {
 		m[r] = true
 	}
 	return set{
-		token: token{TTSet, flag},
+		token: token{ttype: TTSet},
 		runes: m,
 	}
 }
