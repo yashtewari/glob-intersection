@@ -42,7 +42,7 @@ func (t token) Flag() Flag {
 	return t.flag
 }
 
-func (t token) SetFlag(f Flag) {
+func (t *token) SetFlag(f Flag) {
 	t.flag = f
 }
 
@@ -53,7 +53,7 @@ type character struct {
 }
 
 func NewCharacter(r rune) Token {
-	return character{
+	return &character{
 		token: token{ttype: TTCharacter},
 		r:     r,
 	}
@@ -69,7 +69,7 @@ type dot struct {
 }
 
 func NewDot() Token {
-	return dot{
+	return &dot{
 		token: token{ttype: TTDot},
 	}
 }
@@ -85,7 +85,7 @@ func NewSet(runes []rune) Token {
 	for _, r := range runes {
 		m[r] = true
 	}
-	return set{
+	return &set{
 		token: token{ttype: TTSet},
 		runes: m,
 	}

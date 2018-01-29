@@ -18,27 +18,27 @@ func Match(t1 Token, t2 Token) (bool, error) {
 
 	switch t1.Type() {
 	case TTCharacter:
-		ch := t1.(character)
+		ch := t1.(*character)
 
 		switch t2.Type() {
 		case TTCharacter:
-			return matchCharacters(ch, t2.(character)), nil
+			return matchCharacters(ch, t2.(*character)), nil
 		case TTDot:
-			return matchCharacterDot(ch, t2.(dot)), nil
+			return matchCharacterDot(ch, t2.(*dot)), nil
 		case TTSet:
-			return matchCharacterSet(ch, t2.(set)), nil
+			return matchCharacterSet(ch, t2.(*set)), nil
 		default:
 			return false, ErrBadImplementation
 		}
 
 	case TTDot:
-		d := t1.(dot)
+		d := t1.(*dot)
 
 		switch t2.Type() {
 		case TTDot:
-			return matchDots(d, t2.(dot)), nil
+			return matchDots(d, t2.(*dot)), nil
 		case TTSet:
-			return matchDotSet(d, t2.(set)), nil
+			return matchDotSet(d, t2.(*set)), nil
 		default:
 			return false, ErrBadImplementation
 		}
@@ -46,7 +46,7 @@ func Match(t1 Token, t2 Token) (bool, error) {
 	case TTSet:
 		switch t2.Type() {
 		case TTSet:
-			return matchSets(t1.(set), t2.(set)), nil
+			return matchSets(t1.(*set), t2.(*set)), nil
 		default:
 			return false, ErrBadImplementation
 		}
@@ -57,28 +57,28 @@ func Match(t1 Token, t2 Token) (bool, error) {
 	}
 }
 
-func matchCharacters(a character, b character) bool {
+func matchCharacters(a *character, b *character) bool {
 	return a.Rune() == b.Rune()
 }
 
-func matchCharacterDot(a character, b dot) bool {
+func matchCharacterDot(a *character, b *dot) bool {
 	return true
 }
 
-func matchCharacterSet(a character, b set) bool {
+func matchCharacterSet(a *character, b *set) bool {
 	_, ok := b.Runes()[a.Rune()]
 	return ok
 }
 
-func matchDots(a dot, b dot) bool {
+func matchDots(a *dot, b *dot) bool {
 	return true
 }
 
-func matchDotSet(a dot, b set) bool {
+func matchDotSet(a *dot, b *set) bool {
 	return true
 }
 
-func matchSets(a set, b set) bool {
+func matchSets(a *set, b *set) bool {
 	for k, _ := range a.Runes() {
 		if _, ok := b.Runes()[k]; ok {
 			return true
