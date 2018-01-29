@@ -4,6 +4,15 @@ package gintersect
 // Glob represent a glob.
 type Glob []Token
 
+func NewGlob(input string) (Glob, error) {
+	tokens, err := Tokenize([]rune(input))
+	if err != nil {
+		return nil, err
+	}
+
+	return Glob(tokens), nil
+}
+
 // TokenType is the type of a Token.
 type TokenType uint
 

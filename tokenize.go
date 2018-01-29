@@ -33,11 +33,9 @@ var (
 	errEndOfInput   = errors.New("reached end of input")
 )
 
-func Tokenize(input string) (Glob, error) {
-	runes := []rune(input)
+func Tokenize(input []rune) ([]Token, error) {
 	tokens := []Token{}
-
-	for i, t, err := nextToken(0, runes); err != errEndOfInput; i, t, err = nextToken(i, runes) {
+	for i, t, err := nextToken(0, input); err != errEndOfInput; i, t, err = nextToken(i, input) {
 		if err != nil {
 			return nil, err
 		}
@@ -45,7 +43,7 @@ func Tokenize(input string) (Glob, error) {
 		tokens = append(tokens, t)
 	}
 
-	return Glob(tokens), nil
+	return tokens, nil
 }
 
 func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
