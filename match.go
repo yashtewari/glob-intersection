@@ -8,7 +8,7 @@ var (
 	ErrBadImplementation = errors.New("this logical path is invalid")
 )
 
-func Match(t1 Token, t2 Token) (bool, error) {
+func Match(t1 Token, t2 Token) bool {
 	var temp Token
 	if t1.Type() > t2.Type() {
 		temp = t1
@@ -22,13 +22,13 @@ func Match(t1 Token, t2 Token) (bool, error) {
 
 		switch t2.Type() {
 		case TTCharacter:
-			return matchCharacters(ch, t2.(*character)), nil
+			return matchCharacters(ch, t2.(*character))
 		case TTDot:
-			return matchCharacterDot(ch, t2.(*dot)), nil
+			return matchCharacterDot(ch, t2.(*dot))
 		case TTSet:
-			return matchCharacterSet(ch, t2.(*set)), nil
+			return matchCharacterSet(ch, t2.(*set))
 		default:
-			return false, ErrBadImplementation
+			panic(ErrBadImplementation)
 		}
 
 	case TTDot:
@@ -36,23 +36,23 @@ func Match(t1 Token, t2 Token) (bool, error) {
 
 		switch t2.Type() {
 		case TTDot:
-			return matchDots(d, t2.(*dot)), nil
+			return matchDots(d, t2.(*dot))
 		case TTSet:
-			return matchDotSet(d, t2.(*set)), nil
+			return matchDotSet(d, t2.(*set))
 		default:
-			return false, ErrBadImplementation
+			panic(ErrBadImplementation)
 		}
 
 	case TTSet:
 		switch t2.Type() {
 		case TTSet:
-			return matchSets(t1.(*set), t2.(*set)), nil
+			return matchSets(t1.(*set), t2.(*set))
 		default:
-			return false, ErrBadImplementation
+			panic(ErrBadImplementation)
 		}
 
 	default:
-		return false, ErrBadImplementation
+		panic(ErrBadImplementation)
 
 	}
 }

@@ -29,12 +29,7 @@ func init() {
 func TestMatching(t *testing.T) {
 	for t1, t2s := range matching {
 		for _, t2 := range t2s {
-			matches, err := Match(t1, t2)
-			if err != nil {
-				t.Errorf("matching %s and %s gives error: %v", t1.String(), t2.String(), err)
-			}
-
-			if !matches {
+			if !Match(t1, t2) {
 				t.Errorf("expected %s and %s to match, but they didn't", t1.String(), t2.String())
 			}
 		}
@@ -44,12 +39,7 @@ func TestMatching(t *testing.T) {
 func TestNonMatching(t *testing.T) {
 	for t1, t2s := range nonMatching {
 		for _, t2 := range t2s {
-			matches, err := Match(t1, t2)
-			if err != nil {
-				t.Errorf("matching %s and %s gives error: %v", t1.String(), t2.String(), err)
-			}
-
-			if matches {
+			if Match(t1, t2) {
 				t.Errorf("expected %s and %s not to match, but they did", t1.String(), t2.String())
 			}
 		}

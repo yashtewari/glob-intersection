@@ -73,8 +73,7 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 				}
 
 			default:
-				err = errors.Wrapf(ErrBadImplementation, "encountered unhandled token type: %v", ttype)
-				return
+				panic(errors.Wrapf(ErrBadImplementation, "encountered unhandled token type: %v", ttype))
 			}
 
 		} else if _, ok := flagRunes[r]; ok {
@@ -82,8 +81,7 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 			return
 
 		} else if m, ok := modifierRunes[r]; ok {
-			err = errors.Wrapf(ErrBadImplementation, "encountered unhandled modifier: %v", m)
-			return
+			panic(errors.Wrapf(ErrBadImplementation, "encountered unhandled modifier: %v", m))
 		} else {
 			// Nothing special to do.
 			token = NewCharacter(r)
@@ -228,7 +226,7 @@ func nextRune(index int, input []rune) (newIndex int, r rune, escaped bool, err 
 				err = errors.Wrap(ErrInvalidInput, invalidInputMessage(index, "input ends with a \\ (escape) character"))
 			}
 		default:
-			err = errors.Wrapf(ErrBadImplementation, "encountered unhandled modifier: %v", m)
+			panic(errors.Wrapf(ErrBadImplementation, "encountered unhandled modifier: %v", m))
 		}
 	} else {
 		newIndex, r, escaped = index+1, input[index], false
