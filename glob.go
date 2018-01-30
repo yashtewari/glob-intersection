@@ -1,6 +1,11 @@
 // Package gintersect provides methods to check whether the intersection of several globs matches a non-empty set of strings.
 package gintersect
 
+import (
+	"fmt"
+	"strings"
+)
+
 // Glob represent a glob.
 type Glob []Token
 
@@ -25,6 +30,16 @@ const (
 // Flag applies to a token.
 type Flag uint
 
+func (f Flag) String() (s string) {
+	for r, flag := range flagRunes {
+		if f == flag {
+			s = string(r)
+			break
+		}
+	}
+	return
+}
+
 const (
 	FlagNone = iota
 	FlagPlus
@@ -36,6 +51,7 @@ type Token interface {
 	Type() TokenType
 	Flag() Flag
 	SetFlag(Flag)
+	String() string
 }
 
 type token struct {
@@ -68,6 +84,10 @@ func NewCharacter(r rune) Token {
 	}
 }
 
+func (c character) String() string {
+	return fmt.Sprintf("{character: %s, flag: %s}", string(c.Rune()), c.Flag().String())
+}
+
 func (c character) Rune() rune {
 	return c.r
 }
@@ -81,6 +101,10 @@ func NewDot() Token {
 	return &dot{
 		token: token{ttype: TTDot},
 	}
+}
+
+func (d dot) String() string {
+	return fmt.Sprintf("{dot, flag: %s}", d.Flag().String())
 }
 
 // set is a set of characters (similar to regexp character class).
@@ -98,6 +122,14 @@ func NewSet(runes []rune) Token {
 		token: token{ttype: TTSet},
 		runes: m,
 	}
+}
+
+func (s set) String() string {
+	rs := make([]string, 0, 30)
+	for r, _ := range s.Runes() {
+		rs = append(rs, string(r))
+	}
+	return fmt.Sprintf("{set: %s, flag: %s}", strings.Join(rs, ""), s.Flag().String())
 }
 
 func (s set) Runes() map[rune]bool {

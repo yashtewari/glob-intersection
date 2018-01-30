@@ -68,6 +68,9 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 				}
 
 				newIndex, token, err = nextTokenSet(newIndex, input)
+				if err != nil {
+					return
+				}
 
 			default:
 				err = errors.Wrapf(ErrBadImplementation, "encountered unhandled token type: %v", ttype)
@@ -80,6 +83,7 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 
 		} else if m, ok := modifierRunes[r]; ok {
 			err = errors.Wrapf(ErrBadImplementation, "encountered unhandled modifier: %v", m)
+			return
 		} else {
 			// Nothing special to do.
 			token = NewCharacter(r)
@@ -115,7 +119,7 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 		return
 	}
 
-	for ; !complete && err != errEndOfInput; newIndex, r, escaped, err = nextRune(newIndex, input) {
+	for ; err != errEndOfInput; newIndex, r, escaped, err = nextRune(newIndex, input) {
 		if err != nil {
 			return
 		}
@@ -144,6 +148,7 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 				}
 				if r < prev {
 					err = errors.Wrap(ErrInvalidInput, invalidInputMessage(newIndex, "range is out of order: '%s' comes before '%s' in Unicode", string(r), string(prev)))
+					return
 				}
 
 				for x := prev; x <= r; x++ {
@@ -165,8 +170,14 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 			runes = append(runes, r)
 			prev, prevExists = r, true
 		}
+
+		// Don't move the index forward if the set is complete.
+		if complete {
+			break
+		}
 	}
 
+	// End of input is reached before the set completes.
 	if !complete {
 		err = errors.Wrap(ErrInvalidInput, invalidInputMessage(newIndex, "found [ without matching ]"))
 	} else {
@@ -179,6 +190,8 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 func nextFlag(index int, input []rune) (newIndex int, f Flag, err error) {
 	var escaped, ok bool
 	var r rune
+
+	f = FlagNone
 
 	newIndex, r, escaped, err = nextRune(index, input)
 	if err != nil {
@@ -200,6 +213,7 @@ func nextFlag(index int, input []rune) (newIndex int, f Flag, err error) {
 
 func nextRune(index int, input []rune) (newIndex int, r rune, escaped bool, err error) {
 	if index >= len(input) {
+		newIndex = index
 		err = errEndOfInput
 		return
 	}
