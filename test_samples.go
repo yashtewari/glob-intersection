@@ -1,6 +1,8 @@
 package gintersect
 
 var (
+	samplesInitialized = false
+
 	testCharacters     map[rune]Token
 	testCharactersPlus map[rune]Token
 	testCharactersStar map[rune]Token
@@ -14,6 +16,10 @@ var (
 )
 
 func initializeTestSamples() {
+	if samplesInitialized {
+		return
+	}
+
 	testCharacters, testCharactersPlus, testCharactersStar = make(map[rune]Token), make(map[rune]Token), make(map[rune]Token)
 
 	testDot, testDotPlus, testDotStar = NewDot(), NewDot(), NewDot()
@@ -44,6 +50,8 @@ func initializeTestSamples() {
 	testSymbolSet, testSymbolSetPlus, testSymbolSetStar = NewSet(runes), NewSet(runes), NewSet(runes)
 	testSymbolSetPlus.SetFlag(FlagPlus)
 	testSymbolSetStar.SetFlag(FlagStar)
+
+	samplesInitialized = true
 }
 
 func makeRunes(from rune, to rune) []rune {
