@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	ErrBadImplementation = errors.New("this logical path is invalid")
+	errBadImplementation = errors.New("this logical path is invalid")
 )
 
 func Match(t1 Token, t2 Token) bool {
@@ -28,7 +28,7 @@ func Match(t1 Token, t2 Token) bool {
 		case TTSet:
 			return matchCharacterSet(ch, t2.(*set))
 		default:
-			panic(ErrBadImplementation)
+			panic(errBadImplementation)
 		}
 
 	case TTDot:
@@ -40,7 +40,7 @@ func Match(t1 Token, t2 Token) bool {
 		case TTSet:
 			return matchDotSet(d, t2.(*set))
 		default:
-			panic(ErrBadImplementation)
+			panic(errBadImplementation)
 		}
 
 	case TTSet:
@@ -48,11 +48,11 @@ func Match(t1 Token, t2 Token) bool {
 		case TTSet:
 			return matchSets(t1.(*set), t2.(*set))
 		default:
-			panic(ErrBadImplementation)
+			panic(errBadImplementation)
 		}
 
 	default:
-		panic(ErrBadImplementation)
+		panic(errBadImplementation)
 
 	}
 }
