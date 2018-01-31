@@ -23,7 +23,7 @@ func intersectNormal(g1, g2 Glob) bool {
 				return false
 			}
 		} else {
-			intersectSpecial(g1[i:], g2[j:])
+			return intersectSpecial(g1[i:], g2[j:])
 		}
 	}
 
