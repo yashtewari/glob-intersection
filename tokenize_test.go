@@ -47,7 +47,7 @@ func TestTokenizerValid(t *testing.T) {
 
 		actual, err := Tokenize([]rune(input))
 		if err != nil {
-			t.Errorf("error tokenizing input %s: %v", input, err)
+			t.Error(err)
 		}
 
 		if !reflect.DeepEqual(desired, actual) {

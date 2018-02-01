@@ -9,6 +9,7 @@ import (
 // Glob represent a glob.
 type Glob []Token
 
+// NewGlob constructs a Glob from the given string, and reports errors if any.
 func NewGlob(input string) (Glob, error) {
 	tokens, err := Tokenize([]rune(input))
 	if err != nil {

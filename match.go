@@ -8,6 +8,8 @@ var (
 	errBadImplementation = errors.New("this logical path is invalid")
 )
 
+// Match implements single-Token matching, ignoring flags.
+// Example: [a-d] and [b-e] match, while [a-z] and [0-9] do not.
 func Match(t1 Token, t2 Token) bool {
 	var temp Token
 	if t1.Type() > t2.Type() {

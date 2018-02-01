@@ -1,5 +1,6 @@
 package gintersect
 
+// NonEmpty is true if the intersection of lhs and rhs matches a non-empty set of non-empty strings.
 func NonEmpty(lhs string, rhs string) (bool, error) {
 	g1, err := NewGlob(lhs)
 	if err != nil {
