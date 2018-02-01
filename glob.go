@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Glob represent a glob.
+// Glob represents a glob.
 type Glob []Token
 
-// NewGlob constructs a Glob from the given string, and reports errors if any.
+// NewGlob constructs a Glob from the given string by tokenizing and then simplifying it, or reports errors if any.
 func NewGlob(input string) (Glob, error) {
 	tokens, err := Tokenize([]rune(input))
 	if err != nil {
@@ -54,10 +54,12 @@ type Token interface {
 	Type() TokenType
 	Flag() Flag
 	SetFlag(Flag)
+	// Equal describes whether the given Token is exactly equal to this one, barring differences in flags.
 	Equal(Token) bool
 	String() string
 }
 
+// token is the base for all structs implementing Token.
 type token struct {
 	ttype TokenType
 	flag  Flag
@@ -75,7 +77,7 @@ func (t *token) SetFlag(f Flag) {
 	t.flag = f
 }
 
-// character is a specific rune.
+// character is a specific rune. It implements Token.
 type character struct {
 	token
 	r rune
@@ -105,7 +107,7 @@ func (c character) Rune() rune {
 	return c.r
 }
 
-// dot is any character.
+// dot is any character. It implements Token.
 type dot struct {
 	token
 }
@@ -129,6 +131,7 @@ func (d dot) String() string {
 }
 
 // set is a set of characters (similar to regexp character class).
+// It implements Token.
 type set struct {
 	token
 	runes map[rune]bool

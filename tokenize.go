@@ -47,7 +47,7 @@ func Tokenize(input []rune) ([]Token, error) {
 	return tokens, nil
 }
 
-// nextToken yields the Token at the given index, and newIndex at which the one following this one should start.
+// nextToken yields the Token starting at the given index of input, and newIndex at which the next Token should start.
 func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 	var r rune
 	var escaped bool
@@ -65,7 +65,7 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 
 			case TTSet:
 				if r == ']' {
-					err = errors.Wrap(ErrInvalidInput, invalidInputMessage(string(input), newIndex, "set-close ']' with no preceding '['"))
+					err = errors.Wrap(ErrInvalidInput, invalidInputMessage(input, newIndex, "set-close ']' with no preceding '['"))
 					return
 				}
 
@@ -79,7 +79,7 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 			}
 
 		} else if _, ok := flagRunes[r]; ok {
-			err = errors.Wrap(ErrInvalidInput, invalidInputMessage(string(input), newIndex, "flag '%s' must be preceded by a non-flag", string(r)))
+			err = errors.Wrap(ErrInvalidInput, invalidInputMessage(input, newIndex, "flag '%s' must be preceded by a non-flag", string(r)))
 			return
 
 		} else if m, ok := modifierRunes[r]; ok {
@@ -107,6 +107,8 @@ func nextToken(index int, input []rune) (newIndex int, token Token, err error) {
 	return
 }
 
+// nextTokenSet yields a Token having type TokenSet and starting at the given index of input.
+// The next Token/Flag should start at newIndex.
 func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 	var r, prev rune
 	var escaped bool
@@ -129,11 +131,11 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 			switch r {
 			case '-':
 				if !prevExists {
-					err = errors.Wrap(ErrInvalidInput, invalidInputMessage(string(input), newIndex, "range character '-' must be preceded by a Unicode character"))
+					err = errors.Wrap(ErrInvalidInput, invalidInputMessage(input, newIndex, "range character '-' must be preceded by a Unicode character"))
 					return
 				}
 				if newIndex >= len(input)-1 {
-					err = errors.Wrap(ErrInvalidInput, invalidInputMessage(string(input), newIndex, "range character '-' must be followed by a Unicode character"))
+					err = errors.Wrap(ErrInvalidInput, invalidInputMessage(input, newIndex, "range character '-' must be followed by a Unicode character"))
 					return
 				}
 
@@ -142,12 +144,12 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 
 				if !escaped {
 					if r == ']' || r == '-' {
-						err = errors.Wrap(ErrInvalidInput, invalidInputMessage(string(input), newIndex, "range character '-' cannot be followed by a special symbol"))
+						err = errors.Wrap(ErrInvalidInput, invalidInputMessage(input, newIndex, "range character '-' cannot be followed by a special symbol"))
 						return
 					}
 				}
 				if r < prev {
-					err = errors.Wrap(ErrInvalidInput, invalidInputMessage(string(input), newIndex, "range is out of order: '%s' comes before '%s' in Unicode", string(r), string(prev)))
+					err = errors.Wrap(ErrInvalidInput, invalidInputMessage(input, newIndex, "range is out of order: '%s' comes before '%s' in Unicode", string(r), string(prev)))
 					return
 				}
 
@@ -179,7 +181,7 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 
 	// End of input is reached before the set completes.
 	if !complete {
-		err = errors.Wrap(ErrInvalidInput, invalidInputMessage(string(input), newIndex, "found [ without matching ]"))
+		err = errors.Wrap(ErrInvalidInput, invalidInputMessage(input, newIndex, "found [ without matching ]"))
 	} else {
 		t = NewSet(runes)
 	}
@@ -187,6 +189,8 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 	return
 }
 
+// nextFlag yields the Flag starting at the given index of input, if any.
+// The next Token should start at newIndex.
 func nextFlag(index int, input []rune) (newIndex int, f Flag, err error) {
 	var escaped, ok bool
 	var r rune
@@ -211,6 +215,8 @@ func nextFlag(index int, input []rune) (newIndex int, f Flag, err error) {
 	return
 }
 
+// nextRune yields the rune starting (with modifiers) at the given index of input, with boolean escaped describing whether the rune is escaped.
+// The next rune should start at newIndex.
 func nextRune(index int, input []rune) (newIndex int, r rune, escaped bool, err error) {
 	if index >= len(input) {
 		newIndex = index
@@ -225,7 +231,7 @@ func nextRune(index int, input []rune) (newIndex int, r rune, escaped bool, err 
 			if index < len(input)-1 {
 				newIndex, r, escaped = index+2, input[index+1], true
 			} else if index == len(input)-1 {
-				err = errors.Wrap(ErrInvalidInput, invalidInputMessage(string(input), index, "input ends with a \\ (escape) character"))
+				err = errors.Wrap(ErrInvalidInput, invalidInputMessage(input, index, "input ends with a \\ (escape) character"))
 			}
 		default:
 			panic(errors.Wrapf(errBadImplementation, "encountered unhandled modifier: %v", m))
@@ -237,6 +243,7 @@ func nextRune(index int, input []rune) (newIndex int, r rune, escaped bool, err 
 	return
 }
 
-func invalidInputMessage(input string, index int, message string, args ...interface{}) string {
-	return fmt.Sprintf("input:%s, pos:%d, %s", index, fmt.Sprintf(message, args...))
+// invalidInputMessage wraps the message describing invalid input with the input itself and index at which it is invalid.
+func invalidInputMessage(input []rune, index int, message string, args ...interface{}) string {
+	return fmt.Sprintf("input:%s, pos:%d, %s", string(input), index, fmt.Sprintf(message, args...))
 }
