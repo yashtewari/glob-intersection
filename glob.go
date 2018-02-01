@@ -52,6 +52,7 @@ type Token interface {
 	Type() TokenType
 	Flag() Flag
 	SetFlag(Flag)
+	Equal(Token) bool
 	String() string
 }
 
@@ -85,6 +86,15 @@ func NewCharacter(r rune) Token {
 	}
 }
 
+func (c character) Equal(other Token) bool {
+	if c.Type() != other.Type() {
+		return false
+	}
+
+	o := other.(*character)
+	return c.Rune() == o.Rune()
+}
+
 func (c character) String() string {
 	return fmt.Sprintf("{character: %s, flag: %s}", string(c.Rune()), c.Flag().String())
 }
@@ -102,6 +112,14 @@ func NewDot() Token {
 	return &dot{
 		token: token{ttype: TTDot},
 	}
+}
+
+func (d dot) Equal(other Token) bool {
+	if d.Type() != other.Type() {
+		return false
+	}
+
+	return true
 }
 
 func (d dot) String() string {
@@ -123,6 +141,27 @@ func NewSet(runes []rune) Token {
 		token: token{ttype: TTSet},
 		runes: m,
 	}
+}
+
+func (s set) Equal(other Token) bool {
+	if s.Type() != other.Type() {
+		return false
+	}
+
+	o := other.(*set)
+	r1, r2 := s.Runes(), o.Runes()
+
+	if len(r1) != len(r2) {
+		return false
+	}
+
+	for k, _ := range r1 {
+		if _, ok := r2[k]; !ok {
+			return false
+		}
+	}
+
+	return true
 }
 
 func (s set) String() string {
