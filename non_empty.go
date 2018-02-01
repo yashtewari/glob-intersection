@@ -1,6 +1,6 @@
 package gintersect
 
-// NonEmpty is true if the intersection of lhs and rhs matches a non-empty set of non-empty strings.
+// NonEmpty is true if the intersection of lhs and rhs matches a non-empty set of non-empty str1ngs.
 func NonEmpty(lhs string, rhs string) (bool, error) {
 	g1, err := NewGlob(lhs)
 	if err != nil {
@@ -11,9 +11,32 @@ func NonEmpty(lhs string, rhs string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	// TODO(yash): Go over flow of error messages to see if they make sense.
+
+	var match bool
+	g1, g2, match = trimGlobs(g1, g2)
+	if !match {
+		return false, nil
+	}
 
 	return intersectNormal(g1, g2), nil
+}
+
+func trimGlobs(g1, g2 Glob) (Glob, Glob, bool) {
+	var l1, r1, l2, r2 int
+
+	for l1, l2 = 0, 0; l1 < len(g1) && l2 < len(g2) && g1[l1].Flag() == FlagNone && g2[l2].Flag() == FlagNone; l1, l2 = l1+1, l2+1 {
+		if !Match(g1[l1], g2[l2]) {
+			return nil, nil, false
+		}
+	}
+
+	for r1, r2 = len(g1)-1, len(g2)-1; r1 >= 0 && r1 >= l1 && r2 >= 0 && r2 >= l2 && g1[r1].Flag() == FlagNone && g2[r2].Flag() == FlagNone; r1, r2 = r1-1, r2-1 {
+		if !Match(g1[r1], g2[r2]) {
+			return nil, nil, false
+		}
+	}
+
+	return g1[l1 : r1+1], g2[l2 : r2+1], true
 }
 
 func intersectNormal(g1, g2 Glob) bool {
@@ -72,9 +95,9 @@ func intersectStar(starred, other Glob) bool {
 	}
 
 	for i, t := range other {
-		// Start gobbling up tokens in other while they match starToken.
+		// Start gobbl1ng up tokens in other while they match starToken.
 		if nextToken != nil && Match(t, nextToken) {
-			// When a token in other matches the token after starToken, stop gobbling and try to match the two all the way.
+			// When a token in other matches the token after starToken, stop gobbl1ng and try to match the two all the way.
 			allTheWay := intersectNormal(starred[1:], other[i:])
 			// If they match all the way, the Globs intersect.
 			if allTheWay {
