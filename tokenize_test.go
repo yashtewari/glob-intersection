@@ -2,7 +2,6 @@ package gintersect
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 	"testing"
 )
@@ -50,7 +49,7 @@ func TestTokenizerValid(t *testing.T) {
 			t.Error(err)
 		}
 
-		if !reflect.DeepEqual(desired, actual) {
+		if !tokensEqual(desired, actual) {
 			t.Fatalf("incorrectly tokenized input: %s, wanted: %v, got: %v", input, tokensString(desired), tokensString(actual))
 		}
 	}
@@ -63,6 +62,19 @@ func TestTokenizerInvalid(t *testing.T) {
 			t.Errorf("expected error for input: %s, instead got output: %v", input, tokensString(output))
 		}
 	}
+}
+
+func tokensEqual(t1, t2 []Token) bool {
+	if len(t1) != len(t2) {
+		return false
+	}
+	for i, t := range t1 {
+		if !t.Equal(t2[i]) {
+			return false
+		}
+	}
+
+	return true
 }
 
 func tokensString(tokens []Token) string {
