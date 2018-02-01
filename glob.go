@@ -96,7 +96,7 @@ func (c character) Equal(other Token) bool {
 }
 
 func (c character) String() string {
-	return fmt.Sprintf("{character: %s, flag: %s}", string(c.Rune()), c.Flag().String())
+	return fmt.Sprintf("{character: %s flag: %s}", string(c.Rune()), c.Flag().String())
 }
 
 func (c character) Rune() rune {
@@ -123,7 +123,7 @@ func (d dot) Equal(other Token) bool {
 }
 
 func (d dot) String() string {
-	return fmt.Sprintf("{dot, flag: %s}", d.Flag().String())
+	return fmt.Sprintf("{dot flag: %s}", d.Flag().String())
 }
 
 // set is a set of characters (similar to regexp character class).
@@ -169,7 +169,7 @@ func (s set) String() string {
 	for r, _ := range s.Runes() {
 		rs = append(rs, string(r))
 	}
-	return fmt.Sprintf("{set: %s, flag: %s}", strings.Join(rs, ""), s.Flag().String())
+	return fmt.Sprintf("{set: %s flag: %s}", strings.Join(rs, ""), s.Flag().String())
 }
 
 func (s set) Runes() map[rune]bool {
