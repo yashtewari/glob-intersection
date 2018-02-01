@@ -16,6 +16,8 @@ func NewGlob(input string) (Glob, error) {
 		return nil, err
 	}
 
+	tokens = Simplify(tokens)
+
 	return Glob(tokens), nil
 }
 
