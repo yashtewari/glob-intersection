@@ -16,6 +16,11 @@ Go package to check if the set of non-empty strings matched by the intersection 
   - `-` to specify Unicode ranges inside character class definitions.
   - `\` escapes any special symbol, including itself.
 
+### Complexity
+
+Complexity is exponential in the number of flags (`+` or `*`) present in the glob with the smaller flag count.
+Benchmarks (see [`non_empty_bench_test.go`](/non_empty_bench_test.go)) reveal that inputs where one of the globs has <= 10 flags, and both globs have 100s of characters, will run in less than a nanosecond. This should be ok for most use cases.
+
 ### Acknowledgements
 
 [This StackOverflow discussion](https://stackoverflow.com/questions/18695727/algorithm-to-find-out-whether-the-matches-for-two-glob-patterns-or-regular-expr) for fleshing out the logic.
