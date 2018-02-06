@@ -25,6 +25,7 @@ func init() {
 		"[a-z]+":      []Token{testLowerAlphaSetPlus},
 		"[0-9]\\*":    []Token{testNumSet, testCharacters['*']},
 		"[A-Z]*[a-z]": []Token{testUpperAlphaSetStar, testLowerAlphaSet},
+		"[][][][]":    []Token{testEmptySet, testEmptySet, testEmptySet, testEmptySet},
 	}
 
 	invalidInputs = []string{
@@ -32,8 +33,14 @@ func init() {
 		"+",
 		"abcd\\",
 		"\\[]",
+		"abcd[asdjfl",
 		"abcd[",
 		"abcd]",
+		"abcd]asdf",
+		"[120-9-4]+",
+		"[a-z]++",
+		"[][",
+		"][[",
 		"pq[a-]",
 		"[a-z",
 		"[123a-z-]",

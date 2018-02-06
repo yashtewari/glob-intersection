@@ -13,6 +13,8 @@ var (
 	testUpperAlphaSet, testUpperAlphaSetPlus, testUpperAlphaSetStar Token
 	testNumSet, testNumSetPlus, testNumSetStar                      Token
 	testSymbolSet, testSymbolSetPlus, testSymbolSetStar             Token
+
+	testEmptySet Token
 )
 
 func initializeTestSamples() {
@@ -50,6 +52,8 @@ func initializeTestSamples() {
 	testSymbolSet, testSymbolSetPlus, testSymbolSetStar = NewSet(runes), NewSet(runes), NewSet(runes)
 	testSymbolSetPlus.SetFlag(FlagPlus)
 	testSymbolSetStar.SetFlag(FlagStar)
+
+	testEmptySet = NewSet([]rune{})
 
 	samplesInitialized = true
 }
