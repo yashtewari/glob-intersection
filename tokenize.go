@@ -117,7 +117,9 @@ func nextTokenSet(index int, input []rune) (newIndex int, t Token, err error) {
 	complete, prevExists := false, false
 
 	newIndex, r, escaped, err = nextRune(index, input)
-	if err != nil {
+	// If errEndOfInput is encountered, flow of control proceeds to the end of the function,
+	// where the error is handled.
+	if err != nil && err != errEndOfInput {
 		return
 	}
 

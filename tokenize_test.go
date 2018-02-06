@@ -32,6 +32,7 @@ func init() {
 		"+",
 		"abcd\\",
 		"\\[]",
+		"abcd[",
 		"abcd]",
 		"pq[a-]",
 		"[a-z",
