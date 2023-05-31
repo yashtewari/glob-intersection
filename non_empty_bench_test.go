@@ -85,8 +85,8 @@ func BenchmarkInterspersedStarsEmptyEnd(b *testing.B) {
 	// smallLimit specifies the maximum star count of the smaller of two inputs.
 	// largeLimit specifies the maximum star count of the larger of two inputs.
 	smallLimit, largeLimit := 10, 50
-	inputL := make([]string, largeLimit+1, largeLimit+1)
-	inputR := make([]string, largeLimit+1, largeLimit+1)
+	inputL := make([]string, largeLimit+1)
+	inputR := make([]string, largeLimit+1)
 
 	for i := 1; i <= largeLimit; i++ {
 		inputL[i], inputR[i] = interspersedStars(i - 1)
