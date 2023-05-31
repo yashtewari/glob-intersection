@@ -145,10 +145,6 @@ func intersectStar(starred, other Glob) bool {
 	}
 
 	// If there was no token following starToken, and everything from other was gobbled, the Globs intersect.
-	if nextToken == nil {
-		return true
-	}
-
-	// If everything from other was gobbles but there was a nextToken to match, they don't intersect.
-	return false
+	//If everything from other was gobbles but there was a nextToken to match, they don't intersect.
+	return nextToken == nil
 }
