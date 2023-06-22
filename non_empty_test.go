@@ -6,16 +6,17 @@ import (
 
 func TestNonEmptyIntersections(t *testing.T) {
 	tests := map[string][]string{
-		"abcd":        []string{"abcd", "....", "[a-d]*"},
-		"pqrs":        []string{".qrs", "p.rs", "pq.s", "pqr."},
-		".*":          []string{"asdklfj", "jasdfh", "asdhfajfh", "asdflkasdfjl"},
-		"d*":          []string{"[abcd][abcd]", "d[a-z]+", ".....", "[d]*"},
-		"[a-p]+":      []string{"[p-z]+", "apapapaapapapap", ".*", "abcdefgh*"},
-		"abcd[a-c]z+": []string{"abcd[b-d][yz]*", "abcdazzzz", "abcdbzzz", "abcdcz"},
-		".*\\\\":      []string{".*", "asdfasdf\\\\"}, // Escaped \ character.
-		".a.a":        []string{"b.b.", "c.c.", "d.d.", "e.e."},
+		"abcd":                           []string{"abcd", "....", "[a-d]*"},
+		"pqrs":                           []string{".qrs", "p.rs", "pq.s", "pqr."},
+		".*":                             []string{"asdklfj", "jasdfh", "asdhfajfh", "asdflkasdfjl"},
+		"d*":                             []string{"[abcd][abcd]", "d[a-z]+", ".....", "[d]*"},
+		"[a-p]+":                         []string{"[p-z]+", "apapapaapapapap", ".*", "abcdefgh*"},
+		"abcd[a-c]z+":                    []string{"abcd[b-d][yz]*", "abcdazzzz", "abcdbzzz", "abcdcz"},
+		".*\\\\":                         []string{".*", "asdfasdf\\\\"}, // Escaped \ character.
+		".a.a":                           []string{"b.b.", "c.c.", "d.d.", "e.e."},
 		".*.*.*.*.*.*.*.*.*.*.*.*.*.*.*": []string{".*.*.*.*.*.*.*.*.*.*.*"},
 		"foo.*bar":                       []string{"foobar", "fooalkdsjfbar"},
+		"[ab]+c":                         []string{"[bc]+", "[bc]*"},
 	}
 
 	for lhs, rhss := range tests {
